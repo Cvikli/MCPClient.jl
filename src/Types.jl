@@ -255,7 +255,9 @@ end
 
 # Improved CallToolResult constructor
 function CallToolResult(result_data::Dict{String, T}) where T
-    content = if haskey(result_data, "result_json") && result_data["result_json"] !== nothing
+    content = if haskey(result_data, "content") && result_data["content"] !== nothing
+        parse_result_content(result_data["content"])
+    elseif haskey(result_data, "result_json") && result_data["result_json"] !== nothing
         result_json = result_data["result_json"]
         isa(result_json, Vector) ? [parse_content(item) for item in result_json] : [TextContent(text = string(result_json))]
     else
